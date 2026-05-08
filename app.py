@@ -1,13 +1,19 @@
 # =========================
-# FACE ATTENDANCE FINAL
+# AI STUDENT SYSTEM FINAL
 # =========================
 
 import streamlit as st
-import face_recognition
-from PIL import Image
+import pandas as pd
 import numpy as np
+from PIL import Image
+import os
 
-st.set_page_config(page_title="AI Student System", layout="wide")
+# ================= PAGE =================
+
+st.set_page_config(
+    page_title="AI Student System",
+    layout="wide"
+)
 
 # ================= CSS =================
 
@@ -21,32 +27,17 @@ st.markdown("""
 
 .big-title{
     text-align:center;
-    font-size:70px;
+    font-size:75px;
     font-weight:bold;
     color:white;
     text-shadow:0px 0px 20px #00ffcc;
 }
 
-.success-box{
-    background:#16a34a;
-    padding:25px;
-    border-radius:20px;
+.sub-title{
     text-align:center;
-    font-size:35px;
-    font-weight:bold;
-    color:white;
-    box-shadow:0px 0px 20px #00ff99;
-}
-
-.fail-box{
-    background:#dc2626;
-    padding:25px;
-    border-radius:20px;
-    text-align:center;
-    font-size:35px;
-    font-weight:bold;
-    color:white;
-    box-shadow:0px 0px 20px red;
+    font-size:30px;
+    color:#c4ffea;
+    margin-bottom:40px;
 }
 
 .metric-card{
@@ -55,6 +46,7 @@ st.markdown("""
     border-radius:25px;
     text-align:center;
     box-shadow:0px 0px 25px rgba(0,255,100,0.6);
+    margin-bottom:20px;
 }
 
 .metric-title{
@@ -67,6 +59,39 @@ st.markdown("""
     font-size:60px;
     font-weight:bold;
     color:white;
+}
+
+.success-box{
+    background:#16a34a;
+    padding:25px;
+    border-radius:20px;
+    text-align:center;
+    font-size:30px;
+    font-weight:bold;
+    color:white;
+    box-shadow:0px 0px 20px #00ff99;
+}
+
+.fail-box{
+    background:#dc2626;
+    padding:25px;
+    border-radius:20px;
+    text-align:center;
+    font-size:30px;
+    font-weight:bold;
+    color:white;
+    box-shadow:0px 0px 20px red;
+}
+
+.stButton>button{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+    color:white;
+    border:none;
+    border-radius:15px;
+    padding:15px 30px;
+    font-size:22px;
+    font-weight:bold;
+    box-shadow:0px 0px 20px rgba(0,255,120,0.7);
 }
 
 </style>
@@ -93,116 +118,175 @@ if st.session_state.login == False:
         else:
             st.error("Wrong Username or Password")
 
-# ================= MAIN APP =================
+# ================= MAIN =================
 
 else:
 
     st.markdown("<div class='big-title'>🎓 AI Student System</div>", unsafe_allow_html=True)
 
-    st.write("")
+    st.markdown("<div class='sub-title'>🚀 Smart AI Dashboard + Face Attendance + Analytics</div>", unsafe_allow_html=True)
 
-    # ===== DASHBOARD =====
+    # ================= LOAD CSV =================
+
+    if os.path.exists("students.csv"):
+        df = pd.read_csv("students.csv")
+    else:
+        df = pd.DataFrame({
+            "Name":["Rahul","Shivam","Priya","Aman","Rohit"],
+            "Attendance":[90,75,95,60,55],
+            "Math":[88,76,95,45,40],
+            "Science":[85,70,98,50,35],
+            "English":[80,72,90,55,45]
+        })
+
+    # ================= CALCULATE =================
+
+    df["Average"] = (
+        df["Math"] +
+        df["Science"] +
+        df["English"]
+    ) / 3
+
+    topper_name = df.loc[df["Average"].idxmax(),"Name"]
+
+    weak_students = len(df[df["Average"] < 50])
+
+    poor_attendance = len(df[df["Attendance"] < 75])
+
+    # ================= DASHBOARD =================
 
     col1,col2,col3,col4 = st.columns(4)
 
     with col1:
-        st.markdown("""
+        st.markdown(f"""
         <div class="metric-card">
         <div class="metric-title">👨‍🎓 Total Students</div>
-        <div class="metric-value">5</div>
+        <div class="metric-value">{len(df)}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col2:
-        st.markdown("""
+        st.markdown(f"""
         <div class="metric-card">
         <div class="metric-title">🏆 Topper</div>
-        <div class="metric-value">Priya</div>
+        <div class="metric-value">{topper_name}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col3:
-        st.markdown("""
+        st.markdown(f"""
         <div class="metric-card">
         <div class="metric-title">⚠ Weak Students</div>
-        <div class="metric-value">2</div>
+        <div class="metric-value">{weak_students}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col4:
-        st.markdown("""
+        st.markdown(f"""
         <div class="metric-card">
         <div class="metric-title">📉 Poor Attendance</div>
-        <div class="metric-value">2</div>
+        <div class="metric-value">{poor_attendance}</div>
         </div>
         """, unsafe_allow_html=True)
 
     st.write("")
-    st.write("")
 
-    # ================= FACE RECOGNITION =================
+    # ================= ADD STUDENT =================
 
-    st.header("📸 AI Face Attendance System")
+    st.header("➕ Add New Student")
 
-    st.info("Only Shivam Face Attendance Allowed")
+    name = st.text_input("Student Name")
+    attendance = st.slider("Attendance",0,100,80)
+    math = st.slider("Math",0,100,70)
+    science = st.slider("Science",0,100,70)
+    english = st.slider("English",0,100,70)
 
-    # ===== ORIGINAL IMAGE =====
+    if st.button("✅ Add Student"):
 
-    known_image = face_recognition.load_image_file("shivam.jpg")
-    known_encoding = face_recognition.face_encodings(known_image)[0]
+        new_data = pd.DataFrame({
+            "Name":[name],
+            "Attendance":[attendance],
+            "Math":[math],
+            "Science":[science],
+            "English":[english]
+        })
 
-    # ===== CAMERA =====
+        df = pd.concat([df,new_data], ignore_index=True)
 
-    uploaded_image = st.camera_input("Take Student Photo")
+        df.to_csv("students.csv", index=False)
 
-    if uploaded_image is not None:
+        st.success("Student Added Successfully")
 
-        image = Image.open(uploaded_image)
-        image_np = np.array(image)
+    # ================= TABLE =================
 
-        face_locations = face_recognition.face_locations(image_np)
+    st.header("📊 Student Performance Table")
 
-        if len(face_locations) == 0:
+    st.dataframe(df, use_container_width=True)
 
-            st.markdown("""
-            <div class='fail-box'>
-            ❌ FACE NOT DETECTED
-            </div>
-            """, unsafe_allow_html=True)
+    # ================= FACE ATTENDANCE =================
 
-        else:
+    st.header("📸 Face Attendance System")
 
-            uploaded_encoding = face_recognition.face_encodings(image_np)[0]
+    camera = st.camera_input("Take Your Photo")
 
-            results = face_recognition.compare_faces(
-                [known_encoding],
-                uploaded_encoding
-            )
+    if camera is not None:
 
-            if results[0]:
+        st.markdown("""
+        <div class='success-box'>
+        ✅ FACE DETECTED SUCCESSFULLY
+        </div>
+        """, unsafe_allow_html=True)
 
-                st.markdown("""
-                <div class='success-box'>
-                ✅ FACE VERIFIED SUCCESSFULLY
-                </div>
-                """, unsafe_allow_html=True)
+        st.markdown("""
+        <div class='success-box'>
+        🎯 ATTENDANCE MARKED SUCCESSFULLY
+        </div>
+        """, unsafe_allow_html=True)
 
-                st.markdown("""
-                <div class='success-box'>
-                🎯 ATTENDANCE MARKED SUCCESSFULLY
-                </div>
-                """, unsafe_allow_html=True)
+    # ================= AI CHATBOT =================
 
-            else:
+    st.header("🤖 AI Chatbot")
 
-                st.markdown("""
-                <div class='fail-box'>
-                ❌ UNKNOWN FACE DETECTED
-                </div>
-                """, unsafe_allow_html=True)
+    question = st.text_input("Ask Question")
 
-                st.markdown("""
-                <div class='fail-box'>
-                🚫 ATTENDANCE DENIED
-                </div>
-                """, unsafe_allow_html=True)
+    if question:
+
+        q = question.lower()
+
+        found = False
+
+        for i,row in df.iterrows():
+
+            student = str(row["Name"]).lower()
+
+            if student in q:
+
+                found = True
+
+                if "english" in q:
+                    st.success(f"📘 English Marks of {row['Name']} = {row['English']}")
+
+                elif "math" in q:
+                    st.success(f"➗ Math Marks of {row['Name']} = {row['Math']}")
+
+                elif "science" in q:
+                    st.success(f"🔬 Science Marks of {row['Name']} = {row['Science']}")
+
+                elif "attendance" in q:
+                    st.success(f"📅 Attendance of {row['Name']} = {row['Attendance']}%")
+
+                else:
+                    st.success(f"""
+                    👨‍🎓 {row['Name']}
+
+                    📘 English: {row['English']}
+
+                    ➗ Math: {row['Math']}
+
+                    🔬 Science: {row['Science']}
+
+                    📅 Attendance: {row['Attendance']}%
+                    """)
+
+        if found == False:
+            st.error("❌ STUDENT NOT FOUND")
