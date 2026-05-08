@@ -2,436 +2,342 @@ import streamlit as st
 import pandas as pd
 from textblob import TextBlob
 
-# ================= PAGE =================
-
-st.set_page_config(
-    page_title="AI Student System",
-    layout="wide"
-)
-
-# ================= CSS =================
-
-st.markdown("""
-<style>
-
-.stApp{
-    background: linear-gradient(135deg,#020024,#090979,#7b2ff7);
-    color:white;
-}
-
-html, body, [class*="css"]{
-    font-family: 'Segoe UI', sans-serif;
-}
-
-h1,h2,h3,h4,h5,h6,p,label{
-    color:white !important;
-}
-
-/* TITLE */
-
-.main-title{
-    text-align:center;
-    font-size:65px;
-    font-weight:bold;
-    color:white;
-    text-shadow:0px 0px 20px cyan;
-}
-
-.sub{
-    text-align:center;
-    color:#8ff;
-    font-size:22px;
-    margin-bottom:20px;
-}
-
-/* LOGIN BOX */
-
-.login-box{
-    background:rgba(255,255,255,0.08);
-    padding:35px;
-    border-radius:25px;
-    border:2px solid #9b4dff;
-    box-shadow:0px 0px 30px #9b4dff;
-}
-
-/* DASHBOARD CARDS */
-
-.card{
-    padding:25px;
-    border-radius:20px;
-    color:white;
-    text-align:center;
-    box-shadow:0px 0px 20px rgba(0,0,0,0.5);
-    font-weight:bold;
-}
-
-.blue{
-    background:linear-gradient(135deg,#1e3cff,#00bfff);
-}
-
-.green{
-    background:linear-gradient(135deg,#00b894,#00e676);
-}
-
-.orange{
-    background:linear-gradient(135deg,#ff512f,#dd2476);
-}
-
-.purple{
-    background:linear-gradient(135deg,#8e2de2,#4a00e0);
-}
-
-.big{
-    font-size:45px;
-}
-
-.small{
-    font-size:20px;
-}
-
-/* BUTTON */
-
-.stButton>button{
-    background:linear-gradient(90deg,#00dbde,#fc00ff);
-    color:white;
-    border:none;
-    border-radius:12px;
-    font-size:20px;
-    font-weight:bold;
-    height:55px;
-    width:100%;
-}
-
-/* INPUT */
-
-input{
-    color:black !important;
-    font-size:18px !important;
-    font-weight:bold !important;
-}
-
-textarea{
-    color:black !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
+st.set_page_config(page_title="AI Student System", layout="wide")
 
 # ================= LOGIN =================
 
 if "login" not in st.session_state:
     st.session_state.login = False
 
+# ================= CSS =================
+
+st.markdown("""
+<style>
+
+html, body, [class*="css"]{
+    font-family: Arial;
+}
+
+/* MAIN BACKGROUND */
+.stApp{
+    background: linear-gradient(135deg,#020024,#090979,#6a00ff);
+    color:white;
+}
+
+/* SIDEBAR */
+section[data-testid="stSidebar"]{
+    background: linear-gradient(180deg,#020024,#090979,#6a00ff);
+    border-right:2px solid cyan;
+}
+
+section[data-testid="stSidebar"] *{
+    color:white !important;
+    font-weight:bold;
+}
+
+.sidebar-title{
+    text-align:center;
+    font-size:28px;
+    color:#00ffff;
+    font-weight:bold;
+    margin-bottom:20px;
+    text-shadow:0px 0px 20px cyan;
+}
+
+/* INPUT BOX */
+.stTextInput input{
+    background:#ffffff !important;
+    color:black !important;
+    border-radius:12px !important;
+    border:2px solid #00ffff !important;
+    padding:14px !important;
+    font-size:20px !important;
+    font-weight:bold !important;
+}
+
+/* PASSWORD BOX */
+.stTextInput label{
+    color:white !important;
+    font-size:22px !important;
+    font-weight:bold !important;
+}
+
+/* BUTTON */
+.stButton button{
+    background:linear-gradient(90deg,#00c6ff,#a100ff);
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:22px;
+    font-weight:bold;
+    padding:14px 30px;
+    box-shadow:0 0 20px cyan;
+}
+
+/* CARDS */
+.card{
+    padding:25px;
+    border-radius:20px;
+    text-align:center;
+    color:white;
+    font-size:22px;
+    font-weight:bold;
+    box-shadow:0px 0px 20px rgba(0,255,255,0.5);
+}
+
+.blue{
+    background:linear-gradient(135deg,#005bea,#00c6fb);
+}
+
+.green{
+    background:linear-gradient(135deg,#11998e,#38ef7d);
+}
+
+.red{
+    background:linear-gradient(135deg,#ff416c,#ff4b2b);
+}
+
+.purple{
+    background:linear-gradient(135deg,#8e2de2,#4a00e0);
+}
+
+/* TABLE */
+table{
+    color:white !important;
+}
+
+/* HEADINGS */
+h1,h2,h3{
+    color:white !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ================= LOGIN PAGE =================
+
 if not st.session_state.login:
 
     st.markdown("""
-    <div class='main-title'>
+    <h1 style='text-align:center;
+    font-size:70px;
+    color:white;
+    text-shadow:0px 0px 30px cyan;'>
     🔐 AI STUDENT SYSTEM
-    </div>
+    </h1>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
-    <div class='sub'>
-    Smart • Secure • Intelligent
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
     col1,col2,col3 = st.columns([1,2,1])
 
     with col2:
 
-        st.markdown("<div class='login-box'>", unsafe_allow_html=True)
+        st.markdown("""
+        <div style="
+        background:rgba(255,255,255,0.08);
+        padding:40px;
+        border-radius:25px;
+        border:2px solid cyan;
+        box-shadow:0px 0px 30px cyan;">
+        """, unsafe_allow_html=True)
 
         st.markdown("""
-        <h1 style='text-align:center;'>
+        <h1 style='text-align:center;color:white;'>
         Welcome Back!
         </h1>
         """, unsafe_allow_html=True)
 
-        username = st.text_input(
-            "👤 Username",
-            key="user"
-        )
-
-        password = st.text_input(
-            "🔑 Password",
-            type="password",
-            key="pass"
-        )
-
-        st.markdown("<br>", unsafe_allow_html=True)
+        username = st.text_input("👤 Username")
+        password = st.text_input("🔑 Password", type="password")
 
         if st.button("🚀 LOGIN NOW"):
 
             if username == "shivam-user" and password == "12345":
-
                 st.session_state.login = True
                 st.rerun()
-
             else:
-
                 st.error("Wrong Username or Password")
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    st.stop()
-
-# ================= DATA =================
-
-data = {
-    "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
-    "Attendance":[90,95,60,85,55],
-    "Math":[88,98,45,82,40],
-    "Science":[90,99,50,84,35],
-    "English":[85,97,55,81,45]
-}
-
-df = pd.DataFrame(data)
-
-df["Average"] = (
-    df["Math"] +
-    df["Science"] +
-    df["English"]
-)/3
-
-# ================= SIDEBAR =================
-
-st.sidebar.title("🎓 AI STUDENT SYSTEM")
-
-menu = st.sidebar.radio(
-    "MENU",
-    [
-        "Dashboard",
-        "Add Student",
-        "Face Attendance",
-        "Students",
-        "AI Chatbot",
-        "AI Prediction",
-        "Feedback"
-    ]
-)
-
 # ================= DASHBOARD =================
 
-if menu == "Dashboard":
+else:
 
-    st.markdown("""
-    <div class='main-title'>
-    AI STUDENT SYSTEM
+    st.sidebar.markdown("""
+    <div class='sidebar-title'>
+    🎓 AI STUDENT SYSTEM
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
-    <div class='sub'>
-    Smart AI Dashboard + Face Recognition + Analytics
-    </div>
-    """, unsafe_allow_html=True)
+    menu = st.sidebar.radio(
+        "MENU",
+        [
+            "Dashboard",
+            "Add Student",
+            "Face Attendance",
+            "Students",
+            "AI Chatbot",
+            "AI Prediction",
+            "Feedback"
+        ]
+    )
 
-    c1,c2,c3,c4 = st.columns(4)
+    st.title("🎓 AI STUDENT SYSTEM DASHBOARD")
 
-    topper = df.loc[df["Average"].idxmax()]["Name"]
+    # ================= DASHBOARD =================
 
-    weak = len(df[df["Average"] < 60])
+    if menu == "Dashboard":
 
-    poor = len(df[df["Attendance"] < 75])
+        c1,c2,c3,c4 = st.columns(4)
 
-    with c1:
+        with c1:
+            st.markdown("""
+            <div class='card blue'>
+            👨‍🎓<br><br>
+            Total Students<br><br>
+            5
+            </div>
+            """, unsafe_allow_html=True)
 
-        st.markdown(f"""
-        <div class='card blue'>
-        <div class='small'>👨‍🎓 Total Students</div>
-        <div class='big'>{len(df)}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        with c2:
+            st.markdown("""
+            <div class='card green'>
+            🏆<br><br>
+            Topper<br><br>
+            Priya
+            </div>
+            """, unsafe_allow_html=True)
 
-    with c2:
+        with c3:
+            st.markdown("""
+            <div class='card red'>
+            ⚠️<br><br>
+            Weak Students<br><br>
+            2
+            </div>
+            """, unsafe_allow_html=True)
 
-        st.markdown(f"""
-        <div class='card green'>
-        <div class='small'>🏆 Topper</div>
-        <div class='big'>{topper}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        with c4:
+            st.markdown("""
+            <div class='card purple'>
+            📉<br><br>
+            Poor Attendance<br><br>
+            2
+            </div>
+            """, unsafe_allow_html=True)
 
-    with c3:
+        st.markdown("<br>", unsafe_allow_html=True)
 
-        st.markdown(f"""
-        <div class='card orange'>
-        <div class='small'>⚠ Weak Students</div>
-        <div class='big'>{weak}</div>
-        </div>
-        """, unsafe_allow_html=True)
+        data = pd.DataFrame({
+            "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
+            "Attendance":[90,95,60,85,55],
+            "Math":[88,98,45,82,40],
+            "Science":[90,99,50,84,35],
+            "English":[85,97,55,81,45]
+        })
 
-    with c4:
+        st.subheader("📋 Student Performance Table")
+        st.dataframe(data, use_container_width=True)
 
-        st.markdown(f"""
-        <div class='card purple'>
-        <div class='small'>📉 Poor Attendance</div>
-        <div class='big'>{poor}</div>
-        </div>
-        """, unsafe_allow_html=True)
+    # ================= ADD STUDENT =================
 
-    st.markdown("## 📋 Student Performance Table")
+    elif menu == "Add Student":
 
-    st.dataframe(df, use_container_width=True)
+        st.subheader("➕ Add Student")
 
-# ================= ADD STUDENT =================
+        name = st.text_input("Student Name")
 
-elif menu == "Add Student":
+        attendance = st.slider("Attendance",0,100,80)
+        math = st.slider("Math",0,100,70)
+        science = st.slider("Science",0,100,70)
+        english = st.slider("English",0,100,70)
 
-    st.title("➕ Add New Student")
+        if st.button("✅ Add Student"):
+            st.success(f"{name} Added Successfully")
 
-    name = st.text_input("Student Name")
+    # ================= FACE ATTENDANCE =================
 
-    attendance = st.slider("Attendance",0,100,80)
+    elif menu == "Face Attendance":
 
-    math = st.slider("Math",0,100,70)
+        st.subheader("📸 Face Recognition Attendance")
 
-    science = st.slider("Science",0,100,70)
+        pic = st.camera_input("Take Photo")
 
-    english = st.slider("English",0,100,70)
+        if pic:
+            st.success("✅ Face detected successfully")
+            st.success("🎯 Attendance marked successfully")
+            st.success("🧑 Student Present")
 
-    if st.button("✅ Add Student"):
+    # ================= STUDENTS =================
 
-        avg = (math + science + english)/3
+    elif menu == "Students":
 
-        new_row = {
-            "Name":name,
-            "Attendance":attendance,
-            "Math":math,
-            "Science":science,
-            "English":english,
-            "Average":avg
-        }
+        st.subheader("👨‍🎓 Students")
 
-        df.loc[len(df)] = new_row
-
-        st.success("Student Added Successfully")
+        df = pd.DataFrame({
+            "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
+            "Attendance":[90,95,60,85,55],
+            "Average":[87,98,50,82,40]
+        })
 
         st.dataframe(df, use_container_width=True)
 
-# ================= FACE ATTENDANCE =================
+    # ================= CHATBOT =================
 
-elif menu == "Face Attendance":
+    elif menu == "AI Chatbot":
 
-    st.title("📸 Face Recognition Attendance")
+        st.subheader("🤖 AI Chatbot")
 
-    photo = st.camera_input("Take Student Photo")
+        q = st.text_input("Ask Question")
 
-    if photo:
+        if st.button("Ask"):
 
-        st.success("✅ Face detected successfully!")
-        st.success("🎯 Attendance marked successfully!")
-        st.success("🧑 Student Present")
+            if "topper" in q.lower():
+                st.success("🏆 Priya is the topper")
 
-# ================= STUDENTS =================
-
-elif menu == "Students":
-
-    st.title("📚 Students Data")
-
-    st.dataframe(df, use_container_width=True)
-
-# ================= AI CHATBOT =================
-
-elif menu == "AI Chatbot":
-
-    st.title("🤖 AI Chatbot")
-
-    question = st.text_input("Ask Question")
-
-    if question:
-
-        q = question.lower()
-
-        found = False
-
-        for i,row in df.iterrows():
-
-            name = row["Name"].lower()
-
-            if name in q:
-
-                found = True
-
-                if "math" in q:
-
-                    st.success(
-                        f"{row['Name']} Math Marks = {row['Math']}"
-                    )
-
-                elif "science" in q:
-
-                    st.success(
-                        f"{row['Name']} Science Marks = {row['Science']}"
-                    )
-
-                elif "english" in q:
-
-                    st.success(
-                        f"{row['Name']} English Marks = {row['English']}"
-                    )
-
-                elif "attendance" in q:
-
-                    st.success(
-                        f"{row['Name']} Attendance = {row['Attendance']}%"
-                    )
-
-                else:
-
-                    st.success(
-                        f"{row['Name']} Average = {row['Average']:.2f}"
-                    )
-
-        if not found:
-
-            if "topper" in q:
-
-                st.success(f"🏆 Topper is {topper}")
-
-            elif "weak" in q:
-
-                st.warning(f"⚠ Weak Students = {weak}")
+            elif "weak" in q.lower():
+                st.warning("⚠️ Aman and Rohit are weak students")
 
             else:
+                st.info("AI Assistant Ready")
 
-                st.error("Student Not Found")
+    # ================= AI PREDICTION =================
 
-# ================= AI PREDICTION =================
+    elif menu == "AI Prediction":
 
-elif menu == "AI Prediction":
+        st.subheader("📈 AI Study Prediction")
 
-    st.title("📈 AI Study Prediction")
+        hrs = st.slider("Study Hours",1,12,5)
 
-    hours = st.slider("Study Hours",1,12,5)
+        marks = hrs * 10
 
-    predicted = hours * 10
+        st.success(f"📚 Predicted Marks = {marks}")
 
-    st.success(f"🎯 Predicted Marks = {predicted}/120")
+    # ================= FEEDBACK =================
 
-# ================= FEEDBACK =================
+    elif menu == "Feedback":
 
-elif menu == "Feedback":
+        st.subheader("💬 Feedback System")
 
-    st.title("💬 Feedback System")
+        feedback = st.text_area("Enter Feedback")
 
-    feedback = st.text_area("Enter Feedback")
+        if st.button("Submit Feedback"):
 
-    if st.button("Submit Feedback"):
+            polarity = TextBlob(feedback).sentiment.polarity
 
-        polarity = TextBlob(feedback).sentiment.polarity
+            if polarity > 0:
+                st.success("😊 Positive Feedback")
 
-        if polarity > 0:
+            elif polarity < 0:
+                st.error("😔 Negative Feedback")
 
-            st.success("😊 Positive Feedback")
+            else:
+                st.info("😐 Neutral Feedback")
 
-        elif polarity < 0:
+    st.sidebar.markdown("---")
 
-            st.error("😔 Negative Feedback")
-
-        else:
-
-            st.info("👍 Neutral Feedback")
-
-        st.success("Feedback Submitted Successfully")
+    if st.sidebar.button("🚪 Logout"):
+        st.session_state.login = False
+        st.rerun()
