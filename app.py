@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 from textblob import TextBlob
 from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
 import os
 
 # -------------------------
@@ -41,9 +40,17 @@ if not st.session_state.logged_in:
     }
 
     .login-box{
-        padding:40px;
-        border-radius:20px;
+        padding:50px;
+        border-radius:25px;
         background: rgba(255,255,255,0.08);
+        margin-top:40px;
+    }
+
+    .big-label{
+        color:white;
+        font-size:45px;
+        font-weight:bold;
+        margin-top:20px;
     }
 
     </style>
@@ -51,18 +58,42 @@ if not st.session_state.logged_in:
 
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    st.title("🔐 AI Student System Login")
+    st.markdown("""
+    <h1 style='
+    text-align:center;
+    color:white;
+    font-size:70px;
+    font-weight:bold;
+    '>
+    🔐 AI Student System Login
+    </h1>
+    """, unsafe_allow_html=True)
 
-    username = st.text_input("👤 Username")
-    password = st.text_input("🔑 Password", type="password")
+    st.markdown("<div class='big-label'>👤 Username</div>", unsafe_allow_html=True)
+
+    username = st.text_input(
+        "",
+        placeholder="Enter Username"
+    )
+
+    st.markdown("<div class='big-label'>🔑 Password</div>", unsafe_allow_html=True)
+
+    password = st.text_input(
+        "",
+        type="password",
+        placeholder="Enter Password"
+    )
 
     if st.button("🚀 Login"):
 
         if username == USERNAME and password == PASSWORD:
+
             st.session_state.logged_in = True
+            st.success("✅ Login Successful")
             st.rerun()
 
         else:
+
             st.error("❌ Wrong Username or Password")
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -242,7 +273,7 @@ if q:
 
     q = q.lower()
 
-    # ENGLISH MARKS
+    # ENGLISH
     if "english" in q:
 
         found = False
@@ -273,21 +304,9 @@ if q:
 
         if found == False:
 
-            st.markdown("""
-            <div style="
-            background:#dc2626;
-            padding:20px;
-            border-radius:20px;
-            text-align:center;
-            color:white;
-            font-size:35px;
-            font-weight:bold;
-            ">
-            ❌ STUDENT NOT FOUND
-            </div>
-            """, unsafe_allow_html=True)
+            st.error("❌ STUDENT NOT FOUND")
 
-    # MATH MARKS
+    # MATH
     elif "math" in q:
 
         found = False
@@ -318,21 +337,9 @@ if q:
 
         if found == False:
 
-            st.markdown("""
-            <div style="
-            background:#dc2626;
-            padding:20px;
-            border-radius:20px;
-            text-align:center;
-            color:white;
-            font-size:35px;
-            font-weight:bold;
-            ">
-            ❌ STUDENT NOT FOUND
-            </div>
-            """, unsafe_allow_html=True)
+            st.error("❌ STUDENT NOT FOUND")
 
-    # SCIENCE MARKS
+    # SCIENCE
     elif "science" in q:
 
         found = False
@@ -363,35 +370,23 @@ if q:
 
         if found == False:
 
-            st.markdown("""
-            <div style="
-            background:#dc2626;
-            padding:20px;
-            border-radius:20px;
-            text-align:center;
-            color:white;
-            font-size:35px;
-            font-weight:bold;
-            ">
-            ❌ STUDENT NOT FOUND
-            </div>
-            """, unsafe_allow_html=True)
+            st.error("❌ STUDENT NOT FOUND")
+
+    # TOPPER
+    elif "topper" in q:
+
+        st.success(f"🏆 {topper['Name']} is the Topper")
+
+    # WEAK
+    elif "weak" in q:
+
+        weak_names = ", ".join(weak_students["Name"].tolist())
+
+        st.error(f"⚠ Weak Students: {weak_names}")
 
     else:
 
-        st.markdown("""
-        <div style="
-        background:#dc2626;
-        padding:20px;
-        border-radius:20px;
-        text-align:center;
-        color:white;
-        font-size:35px;
-        font-weight:bold;
-        ">
-        🤖 AI आपका सवाल समझ नहीं पाया
-        </div>
-        """, unsafe_allow_html=True)
+        st.error("🤖 AI आपका सवाल समझ नहीं पाया")
 
 # -------------------------
 # ML PREDICTION
