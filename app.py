@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 from textblob import TextBlob
 from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
 import os
 
 # =========================
@@ -44,7 +43,7 @@ if not st.session_state.logged_in:
     <style>
 
     .stApp{
-        background: linear-gradient(to right,#020617,#7c3aed);
+        background: linear-gradient(135deg,#020617,#312e81,#7c3aed);
         color:white;
     }
 
@@ -52,8 +51,8 @@ if not st.session_state.logged_in:
         padding:50px;
         border-radius:30px;
         background: rgba(255,255,255,0.08);
-        box-shadow:0px 0px 30px rgba(255,255,255,0.1);
-        margin-top:40px;
+        margin-top:50px;
+        box-shadow:0px 0px 30px rgba(255,255,255,0.15);
     }
 
     .login-title{
@@ -61,11 +60,11 @@ if not st.session_state.logged_in:
         font-size:70px;
         font-weight:bold;
         color:white;
-        text-shadow:0px 0px 15px #22c55e;
+        text-shadow:0px 0px 20px #22c55e;
     }
 
     .login-label{
-        font-size:35px;
+        font-size:32px;
         color:white;
         font-weight:bold;
         margin-top:20px;
@@ -74,11 +73,11 @@ if not st.session_state.logged_in:
     .stButton button{
         background:linear-gradient(to right,#16a34a,#22c55e);
         color:white;
-        font-size:28px;
+        font-size:26px;
         font-weight:bold;
         border:none;
         border-radius:18px;
-        padding:15px 40px;
+        padding:14px 35px;
         box-shadow:0px 0px 20px #22c55e;
     }
 
@@ -110,7 +109,6 @@ if not st.session_state.logged_in:
             st.rerun()
 
         else:
-
             st.error("❌ Wrong Username or Password")
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -118,98 +116,106 @@ if not st.session_state.logged_in:
     st.stop()
 
 # =========================
-# MAIN CSS
+# PREMIUM CSS
 # =========================
 
 st.markdown("""
 <style>
 
+/* MAIN BACKGROUND */
+
 .stApp{
-background: linear-gradient(to right,#020617,#7c3aed);
+background: linear-gradient(135deg,#020617,#312e81,#7c3aed);
 color:white;
 }
 
-/* TITLES */
+/* MAIN TITLE */
 
 .main-title{
 text-align:center;
-font-size:75px;
-font-weight:bold;
+font-size:85px;
+font-weight:900;
 color:white;
-text-shadow:0px 0px 20px #22c55e;
+text-shadow:0px 0px 25px #22c55e;
+margin-bottom:10px;
 }
+
+/* SUB TITLE */
 
 .sub-title{
 text-align:center;
-font-size:30px;
+font-size:34px;
 font-weight:bold;
 color:#bbf7d0;
-margin-bottom:30px;
+margin-bottom:40px;
 }
 
-/* METRIC CARDS */
+/* BIG METRIC CARDS */
 
 [data-testid="stMetric"]{
 background: linear-gradient(135deg,#16a34a,#22c55e);
-padding:35px;
-border-radius:25px;
+padding:45px;
+border-radius:30px;
 text-align:center;
-box-shadow:0px 0px 25px rgba(34,197,94,0.9);
-border:2px solid rgba(255,255,255,0.2);
+box-shadow:0px 0px 35px rgba(34,197,94,1);
+border:3px solid rgba(255,255,255,0.2);
+transition:0.3s;
+margin-bottom:20px;
 }
+
+/* HOVER EFFECT */
+
+[data-testid="stMetric"]:hover{
+transform:scale(1.04);
+box-shadow:0px 0px 45px #22c55e;
+}
+
+/* METRIC TITLE */
 
 [data-testid="stMetricLabel"]{
-font-size:28px !important;
-font-weight:bold !important;
+font-size:38px !important;
+font-weight:900 !important;
 color:white !important;
+text-align:center !important;
 }
 
+/* METRIC VALUE */
+
 [data-testid="stMetricValue"]{
-font-size:55px !important;
-font-weight:bold !important;
+font-size:75px !important;
+font-weight:900 !important;
 color:white !important;
+text-align:center !important;
+}
+
+/* INPUT BOX */
+
+.stTextInput input,
+.stTextArea textarea,
+.stNumberInput input{
+font-size:24px !important;
+border-radius:18px !important;
+border:3px solid #22c55e !important;
+padding:12px !important;
 }
 
 /* BUTTON */
 
 .stButton button{
-background: linear-gradient(to right,#16a34a,#22c55e) !important;
+background:linear-gradient(to right,#16a34a,#22c55e) !important;
 color:white !important;
-font-size:24px !important;
+font-size:26px !important;
 font-weight:bold !important;
 border:none !important;
-padding:14px 35px !important;
 border-radius:18px !important;
+padding:15px 35px !important;
 box-shadow:0px 0px 20px #22c55e !important;
 }
 
-/* INPUTS */
-
-.stTextInput input,
-.stTextArea textarea,
-.stNumberInput input{
-font-size:22px !important;
-border-radius:15px !important;
-border:3px solid #22c55e !important;
-}
-
-/* SELECT */
-
-div[data-baseweb="select"] > div{
-font-size:22px !important;
-border-radius:15px !important;
-border:3px solid #22c55e !important;
-}
-
-/* HEADINGS */
-
-h1,h2,h3{
-color:white !important;
-font-weight:bold !important;
-}
+/* LABELS */
 
 label{
-font-size:24px !important;
+font-size:28px !important;
 font-weight:bold !important;
 color:#bbf7d0 !important;
 }
@@ -219,7 +225,33 @@ color:#bbf7d0 !important;
 [data-testid="stDataFrame"]{
 border-radius:20px;
 overflow:hidden;
-box-shadow:0px 0px 20px rgba(255,255,255,0.2);
+box-shadow:0px 0px 25px rgba(255,255,255,0.2);
+}
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width:768px){
+
+.main-title{
+font-size:45px;
+}
+
+.sub-title{
+font-size:22px;
+}
+
+[data-testid="stMetricLabel"]{
+font-size:24px !important;
+}
+
+[data-testid="stMetricValue"]{
+font-size:45px !important;
+}
+
+[data-testid="stMetric"]{
+padding:25px;
+}
+
 }
 
 </style>
@@ -294,7 +326,7 @@ st.markdown("""
 </div>
 
 <div class='sub-title'>
-🚀 Smart AI Dashboard + Face Attendance + Analytics
+🚀 Smart AI Dashboard + Face Recognition + Analytics
 </div>
 """, unsafe_allow_html=True)
 
@@ -316,8 +348,6 @@ with col3:
 with col4:
     poor = len(df[df["Attendance"] < 75])
     st.metric("📉 Poor Attendance", poor)
-
-st.write("")
 
 # =========================
 # ADD STUDENT
@@ -394,6 +424,7 @@ q = st.text_input("🤖 Ask AI Question")
 if q:
 
     q = q.lower()
+
     found = False
 
     for i in range(len(df)):
