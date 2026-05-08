@@ -1,4 +1,7 @@
 streamlit
 pandas
-textblob
 matplotlib
+opencv-python-headless
+face-recognition
+numpy
+Pillow
