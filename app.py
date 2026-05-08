@@ -4,21 +4,16 @@ from textblob import TextBlob
 
 st.set_page_config(page_title="AI Student System", layout="wide")
 
-# ================= LOGIN =================
+# ---------------- LOGIN SESSION ----------------
 
-if "login" not in st.session_state:
-    st.session_state.login = False
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-# ================= CSS =================
+# ---------------- CSS ----------------
 
 st.markdown("""
 <style>
 
-html, body, [class*="css"]{
-    font-family: Arial;
-}
-
-/* MAIN BACKGROUND */
 .stApp{
     background: linear-gradient(135deg,#020024,#090979,#6a00ff);
     color:white;
@@ -35,28 +30,42 @@ section[data-testid="stSidebar"] *{
     font-weight:bold;
 }
 
-.sidebar-title{
+/* TITLE */
+.main-title{
     text-align:center;
-    font-size:28px;
-    color:#00ffff;
+    font-size:70px;
     font-weight:bold;
-    margin-bottom:20px;
-    text-shadow:0px 0px 20px cyan;
+    color:white;
+    text-shadow:0px 0px 30px cyan;
 }
 
-/* INPUT BOX */
+/* HEADING */
+h1,h2,h3,label,p{
+    color:white !important;
+    font-weight:bold !important;
+}
+
+/* INPUT */
 .stTextInput input{
-    background:#ffffff !important;
+    background:white !important;
     color:black !important;
     border-radius:12px !important;
-    border:2px solid #00ffff !important;
-    padding:14px !important;
+    border:2px solid cyan !important;
     font-size:20px !important;
     font-weight:bold !important;
 }
 
-/* PASSWORD BOX */
-.stTextInput label{
+/* TEXT AREA */
+textarea{
+    background:white !important;
+    color:black !important;
+    font-size:18px !important;
+    border-radius:12px !important;
+    border:2px solid cyan !important;
+}
+
+/* SLIDER LABEL */
+.stSlider label{
     color:white !important;
     font-size:22px !important;
     font-weight:bold !important;
@@ -70,21 +79,22 @@ section[data-testid="stSidebar"] *{
     border-radius:12px;
     font-size:22px;
     font-weight:bold;
-    padding:14px 30px;
-    box-shadow:0 0 20px cyan;
+    padding:12px 25px;
+    box-shadow:0px 0px 20px cyan;
 }
 
-/* CARDS */
+/* CARD */
 .card{
     padding:25px;
     border-radius:20px;
     text-align:center;
     color:white;
-    font-size:22px;
+    font-size:25px;
     font-weight:bold;
-    box-shadow:0px 0px 20px rgba(0,255,255,0.5);
+    box-shadow:0px 0px 25px rgba(0,255,255,0.5);
 }
 
+/* COLORS */
 .blue{
     background:linear-gradient(135deg,#005bea,#00c6fb);
 }
@@ -102,45 +112,55 @@ section[data-testid="stSidebar"] *{
 }
 
 /* TABLE */
-table{
-    color:white !important;
+[data-testid="stDataFrame"]{
+    background:#0b0b45;
+    border-radius:15px;
 }
 
-/* HEADINGS */
-h1,h2,h3{
-    color:white !important;
+/* LOGIN BOX */
+.login-box{
+    background:rgba(255,255,255,0.08);
+    padding:40px;
+    border-radius:25px;
+    border:2px solid cyan;
+    box-shadow:0px 0px 30px cyan;
+}
+
+/* SUCCESS */
+.stSuccess{
+    font-size:20px !important;
+    font-weight:bold !important;
+}
+
+/* SIDEBAR TITLE */
+.sidebar-title{
+    text-align:center;
+    font-size:30px;
+    color:#00ffff;
+    font-weight:bold;
+    text-shadow:0px 0px 20px cyan;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ================= LOGIN PAGE =================
+# ---------------- LOGIN PAGE ----------------
 
-if not st.session_state.login:
+if not st.session_state.logged_in:
 
     st.markdown("""
-    <h1 style='text-align:center;
-    font-size:70px;
-    color:white;
-    text-shadow:0px 0px 30px cyan;'>
+    <div class='main-title'>
     🔐 AI STUDENT SYSTEM
-    </h1>
+    </div>
     """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    col1,col2,col3 = st.columns([1,2,1])
+    c1,c2,c3 = st.columns([1,2,1])
 
-    with col2:
+    with c2:
 
-        st.markdown("""
-        <div style="
-        background:rgba(255,255,255,0.08);
-        padding:40px;
-        border-radius:25px;
-        border:2px solid cyan;
-        box-shadow:0px 0px 30px cyan;">
-        """, unsafe_allow_html=True)
+        st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
         st.markdown("""
         <h1 style='text-align:center;color:white;'>
@@ -154,14 +174,15 @@ if not st.session_state.login:
         if st.button("🚀 LOGIN NOW"):
 
             if username == "shivam-user" and password == "12345":
-                st.session_state.login = True
+                st.session_state.logged_in = True
                 st.rerun()
+
             else:
-                st.error("Wrong Username or Password")
+                st.error("❌ Wrong Username or Password")
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ================= DASHBOARD =================
+# ---------------- DASHBOARD ----------------
 
 else:
 
@@ -184,9 +205,13 @@ else:
         ]
     )
 
-    st.title("🎓 AI STUDENT SYSTEM DASHBOARD")
+    st.markdown("""
+    <div class='main-title' style='font-size:55px;'>
+    🎓 AI STUDENT SYSTEM DASHBOARD
+    </div>
+    """, unsafe_allow_html=True)
 
-    # ================= DASHBOARD =================
+    # ---------------- DASHBOARD ----------------
 
     if menu == "Dashboard":
 
@@ -230,6 +255,8 @@ else:
 
         st.markdown("<br>", unsafe_allow_html=True)
 
+        st.subheader("📋 Student Performance Table")
+
         data = pd.DataFrame({
             "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
             "Attendance":[90,95,60,85,55],
@@ -238,10 +265,9 @@ else:
             "English":[85,97,55,81,45]
         })
 
-        st.subheader("📋 Student Performance Table")
         st.dataframe(data, use_container_width=True)
 
-    # ================= ADD STUDENT =================
+    # ---------------- ADD STUDENT ----------------
 
     elif menu == "Add Student":
 
@@ -255,26 +281,26 @@ else:
         english = st.slider("English",0,100,70)
 
         if st.button("✅ Add Student"):
-            st.success(f"{name} Added Successfully")
+            st.success(f"🎉 {name} Added Successfully")
 
-    # ================= FACE ATTENDANCE =================
+    # ---------------- FACE ATTENDANCE ----------------
 
     elif menu == "Face Attendance":
 
         st.subheader("📸 Face Recognition Attendance")
 
-        pic = st.camera_input("Take Photo")
+        img = st.camera_input("Take Photo")
 
-        if pic:
-            st.success("✅ Face detected successfully")
-            st.success("🎯 Attendance marked successfully")
+        if img:
+            st.success("✅ Face Detected Successfully")
+            st.success("🎯 Attendance Marked Successfully")
             st.success("🧑 Student Present")
 
-    # ================= STUDENTS =================
+    # ---------------- STUDENTS ----------------
 
     elif menu == "Students":
 
-        st.subheader("👨‍🎓 Students")
+        st.subheader("👨‍🎓 Students List")
 
         df = pd.DataFrame({
             "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
@@ -284,15 +310,15 @@ else:
 
         st.dataframe(df, use_container_width=True)
 
-    # ================= CHATBOT =================
+    # ---------------- CHATBOT ----------------
 
     elif menu == "AI Chatbot":
 
         st.subheader("🤖 AI Chatbot")
 
-        q = st.text_input("Ask Question")
+        q = st.text_input("Ask Any Question")
 
-        if st.button("Ask"):
+        if st.button("Ask AI"):
 
             if "topper" in q.lower():
                 st.success("🏆 Priya is the topper")
@@ -300,10 +326,13 @@ else:
             elif "weak" in q.lower():
                 st.warning("⚠️ Aman and Rohit are weak students")
 
-            else:
-                st.info("AI Assistant Ready")
+            elif "attendance" in q.lower():
+                st.info("📊 Average attendance is 77%")
 
-    # ================= AI PREDICTION =================
+            else:
+                st.success("🤖 AI Assistant Ready")
+
+    # ---------------- PREDICTION ----------------
 
     elif menu == "AI Prediction":
 
@@ -315,7 +344,7 @@ else:
 
         st.success(f"📚 Predicted Marks = {marks}")
 
-    # ================= FEEDBACK =================
+    # ---------------- FEEDBACK ----------------
 
     elif menu == "Feedback":
 
@@ -339,5 +368,5 @@ else:
     st.sidebar.markdown("---")
 
     if st.sidebar.button("🚪 Logout"):
-        st.session_state.login = False
+        st.session_state.logged_in = False
         st.rerun()
