@@ -3,14 +3,19 @@ import pandas as pd
 from textblob import TextBlob
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="AI Student System", layout="wide")
+# ================= PAGE =================
 
-# ---------------- LOGIN SESSION ----------------
+st.set_page_config(
+    page_title="AI Student System",
+    layout="wide"
+)
+
+# ================= LOGIN SESSION =================
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-# ---------------- CSS ----------------
+# ================= CSS =================
 
 st.markdown("""
 <style>
@@ -21,6 +26,7 @@ st.markdown("""
 }
 
 /* SIDEBAR */
+
 section[data-testid="stSidebar"]{
     background: linear-gradient(180deg,#020024,#090979,#6a00ff);
     border-right:2px solid cyan;
@@ -32,6 +38,7 @@ section[data-testid="stSidebar"] *{
 }
 
 /* TITLE */
+
 .main-title{
     text-align:center;
     font-size:65px;
@@ -41,12 +48,14 @@ section[data-testid="stSidebar"] *{
 }
 
 /* HEADING */
+
 h1,h2,h3,label,p{
     color:white !important;
     font-weight:bold !important;
 }
 
 /* INPUT */
+
 .stTextInput input{
     background:white !important;
     color:black !important;
@@ -57,6 +66,7 @@ h1,h2,h3,label,p{
 }
 
 /* TEXT AREA */
+
 textarea{
     background:white !important;
     color:black !important;
@@ -66,6 +76,7 @@ textarea{
 }
 
 /* BUTTON */
+
 .stButton button{
     background:linear-gradient(90deg,#00c6ff,#a100ff);
     color:white;
@@ -78,6 +89,7 @@ textarea{
 }
 
 /* CARD */
+
 .card{
     padding:25px;
     border-radius:20px;
@@ -89,6 +101,7 @@ textarea{
 }
 
 /* COLORS */
+
 .blue{
     background:linear-gradient(135deg,#005bea,#00c6fb);
 }
@@ -106,6 +119,7 @@ textarea{
 }
 
 /* LOGIN BOX */
+
 .login-box{
     background:rgba(255,255,255,0.08);
     padding:40px;
@@ -115,6 +129,7 @@ textarea{
 }
 
 /* SIDEBAR TITLE */
+
 .sidebar-title{
     text-align:center;
     font-size:30px;
@@ -126,7 +141,7 @@ textarea{
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- LOGIN PAGE ----------------
+# ================= LOGIN PAGE =================
 
 if not st.session_state.logged_in:
 
@@ -164,7 +179,7 @@ if not st.session_state.logged_in:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ---------------- DASHBOARD ----------------
+# ================= MAIN DASHBOARD =================
 
 else:
 
@@ -193,7 +208,7 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # ---------------- DASHBOARD ----------------
+    # ================= DASHBOARD =================
 
     if menu == "Dashboard":
 
@@ -249,7 +264,7 @@ else:
 
         st.dataframe(data, use_container_width=True)
 
-        # ---------------- GRAPH SECTION ----------------
+        # ================= GRAPH SECTION =================
 
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -262,11 +277,18 @@ else:
         col1, col2 = st.columns(2)
 
         # PIE CHART
+
         with col1:
 
             fig1, ax1 = plt.subplots(figsize=(5,5))
 
-            colors = ["#00E5FF","#00FF85","#FF9800","#FF00E5","#FF1744"]
+            colors = [
+                "#00E5FF",
+                "#00FF85",
+                "#FF9800",
+                "#FF00E5",
+                "#FF1744"
+            ]
 
             ax1.pie(
                 marks,
@@ -281,6 +303,7 @@ else:
             st.pyplot(fig1)
 
         # BAR GRAPH
+
         with col2:
 
             fig2, ax2 = plt.subplots(figsize=(6,5))
@@ -288,7 +311,13 @@ else:
             ax2.bar(
                 students,
                 attendance_data,
-                color=["#00E5FF","#00FF85","#FF9800","#FF00E5","#FF1744"]
+                color=[
+                    "#00E5FF",
+                    "#00FF85",
+                    "#FF9800",
+                    "#FF00E5",
+                    "#FF1744"
+                ]
             )
 
             ax2.set_ylim(0,100)
@@ -298,7 +327,7 @@ else:
 
             st.pyplot(fig2)
 
-    # ---------------- ADD STUDENT ----------------
+    # ================= ADD STUDENT =================
 
     elif menu == "Add Student":
 
@@ -314,7 +343,7 @@ else:
         if st.button("✅ Add Student"):
             st.success(f"🎉 {name} Added Successfully")
 
-    # ---------------- FACE ATTENDANCE ----------------
+    # ================= FACE ATTENDANCE =================
 
     elif menu == "Face Attendance":
 
@@ -327,7 +356,7 @@ else:
             st.success("🎯 Attendance Marked Successfully")
             st.success("🧑 Student Present")
 
-    # ---------------- STUDENTS ----------------
+    # ================= STUDENTS =================
 
     elif menu == "Students":
 
@@ -341,29 +370,67 @@ else:
 
         st.dataframe(df, use_container_width=True)
 
-    # ---------------- CHATBOT ----------------
+    # ================= AI CHATBOT =================
 
     elif menu == "AI Chatbot":
 
         st.subheader("🤖 AI Chatbot")
 
-        q = st.text_input("Ask Any Question")
+        st.markdown("""
+        <h3 style='color:#00ffff;'>
+        Ask Any Question About Students
+        </h3>
+        """, unsafe_allow_html=True)
 
-        if st.button("Ask AI"):
+        q = st.text_input("💬 Enter Your Question")
 
-            if "topper" in q.lower():
-                st.success("🏆 Priya is the topper")
+        if st.button("🚀 Ask AI"):
 
-            elif "weak" in q.lower():
+            question = q.lower()
+
+            if "topper" in question:
+                st.success("🏆 Priya is the topper with highest marks")
+
+            elif "weak" in question:
                 st.warning("⚠️ Aman and Rohit are weak students")
 
-            elif "attendance" in q.lower():
+            elif "attendance" in question:
                 st.info("📊 Average attendance is 77%")
 
-            else:
-                st.success("🤖 AI Assistant Ready")
+            elif "aman english" in question:
+                st.success("📘 Aman English Marks = 55")
 
-    # ---------------- PREDICTION ----------------
+            elif "rahul math" in question:
+                st.success("➗ Rahul Math Marks = 88")
+
+            elif "priya science" in question:
+                st.success("🧪 Priya Science Marks = 99")
+
+            elif "sneha attendance" in question:
+                st.success("📅 Sneha Attendance = 85%")
+
+            elif "rohit average" in question:
+                st.success("📈 Rohit Average = 40")
+
+            elif "students" in question:
+                st.success("👨‍🎓 Rahul, Priya, Aman, Sneha, Rohit")
+
+            elif "total students" in question:
+                st.success("📚 Total Students = 5")
+
+            elif "best attendance" in question:
+                st.success("🥇 Priya has best attendance = 95%")
+
+            elif "face attendance" in question:
+                st.success("📸 Face Attendance System Active")
+
+            elif "feedback" in question:
+                st.success("💬 Feedback System Running Successfully")
+
+            else:
+                st.error("❌ Question Not Found In Database")
+
+    # ================= AI PREDICTION =================
 
     elif menu == "AI Prediction":
 
@@ -375,7 +442,7 @@ else:
 
         st.success(f"📚 Predicted Marks = {marks}")
 
-    # ---------------- FEEDBACK ----------------
+    # ================= FEEDBACK =================
 
     elif menu == "Feedback":
 
