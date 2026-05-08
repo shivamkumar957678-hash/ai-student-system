@@ -1,270 +1,248 @@
+# app.py
+
 import streamlit as st
 import pandas as pd
 import numpy as np
-import os
 
-# ================= PAGE =================
-st.set_page_config(
-    page_title="AI Student System",
-    layout="wide"
-)
+st.set_page_config(page_title="AI Student System", layout="wide")
 
-# ================= STYLE =================
+# ================= CSS =================
 st.markdown("""
 <style>
 
 .stApp{
-    background: linear-gradient(135deg,#050b2d,#6a11cb);
+    background: linear-gradient(135deg,#020024,#090979,#7b2ff7);
     color:white;
 }
 
-/* TITLE */
+html, body, [class*="css"]{
+    font-family: 'Segoe UI', sans-serif;
+}
+
 .main-title{
     text-align:center;
-    font-size:80px;
+    font-size:60px;
     font-weight:bold;
     color:white;
-    text-shadow:0px 0px 25px #00ffee;
+    text-shadow:0 0 20px cyan;
 }
 
-/* SUBTITLE */
-.sub-title{
+.sub{
     text-align:center;
-    font-size:32px;
-    color:#c8ffef;
-    font-weight:bold;
-    margin-bottom:30px;
+    color:#9ff;
+    font-size:22px;
+    margin-bottom:20px;
 }
 
-/* INPUT LABEL */
-div[data-testid="stTextInput"] label{
-    color:white !important;
-    font-size:28px !important;
-    font-weight:bold !important;
-}
-
-/* INPUT BOX */
-.stTextInput input{
-    height:65px !important;
-    font-size:26px !important;
-    border-radius:18px !important;
-}
-
-/* BUTTON */
-.stButton button{
-    background:#18c45c !important;
-    color:white !important;
-    font-size:28px !important;
-    font-weight:bold !important;
-    border-radius:18px !important;
-    height:65px !important;
-    width:250px !important;
-    box-shadow:0px 0px 20px #18c45c;
-}
-
-/* CARDS */
-.card{
-    background:#18b84b;
-    padding:40px;
-    border-radius:25px;
-    text-align:center;
-    box-shadow:0px 0px 25px rgba(0,255,120,0.7);
-}
-
-.card-title{
-    font-size:30px;
-    font-weight:bold;
-    color:white;
-}
-
-.card-value{
-    font-size:70px;
-    font-weight:bold;
-    color:white;
-}
-
-/* SECTION */
-.section{
-    font-size:40px;
-    font-weight:bold;
-    color:white;
-    margin-top:30px;
-}
-
-/* SUCCESS */
-.success-box{
-    background:#18b84b;
-    padding:25px;
-    border-radius:20px;
-    font-size:28px;
-    font-weight:bold;
-    color:white;
-    box-shadow:0px 0px 20px #18b84b;
-}
-
-/* LOGIN BOX */
 .login-box{
     background:rgba(255,255,255,0.08);
-    padding:40px;
-    border-radius:30px;
-    box-shadow:0px 0px 30px rgba(0,255,255,0.4);
-    margin-top:30px;
+    padding:30px;
+    border-radius:25px;
+    border:2px solid #9b4dff;
+    box-shadow:0 0 25px #9b4dff;
+}
+
+.card{
+    padding:25px;
+    border-radius:20px;
+    color:white;
+    text-align:center;
+    box-shadow:0 0 15px rgba(0,0,0,0.5);
+    font-weight:bold;
+}
+
+.blue{background:linear-gradient(135deg,#1e3cff,#00bfff);}
+.green{background:linear-gradient(135deg,#00b894,#00e676);}
+.orange{background:linear-gradient(135deg,#ff512f,#dd2476);}
+.purple{background:linear-gradient(135deg,#8e2de2,#4a00e0);}
+
+.big{
+    font-size:45px;
+}
+
+.small{
+    font-size:20px;
+}
+
+.sidebar .sidebar-content{
+    background:#050816;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ================= LOGIN SESSION =================
+# ================= LOGIN =================
+
 if "login" not in st.session_state:
     st.session_state.login = False
 
-# ================= LOGIN PAGE =================
-if st.session_state.login == False:
+if not st.session_state.login:
 
-    st.markdown("""
-    <div class="login-box">
-    <h1 class="main-title">🔐 AI Student System Login</h1>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("<div class='main-title'>🔐 AI STUDENT SYSTEM</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sub'>Smart • Secure • Intelligent</div>", unsafe_allow_html=True)
 
-    st.markdown("## 👤 Username")
-    username = st.text_input("", key="username")
+    col1,col2,col3 = st.columns([1,2,1])
 
-    st.markdown("## 🔑 Password")
-    password = st.text_input("", type="password", key="password")
+    with col2:
 
-    if st.button("🚀 LOGIN NOW"):
+        st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-        if username.strip() == "admin" and password.strip() == "admin123":
+        st.markdown("## Welcome Back!")
 
-            st.session_state.login = True
-            st.rerun()
+        username = st.text_input("👤 Username", placeholder="shivam-user")
+        password = st.text_input("🔑 Password", type="password", placeholder="12345")
 
-        else:
-            st.error("❌ Wrong Username or Password")
+        if st.button("🚀 LOGIN NOW", use_container_width=True):
 
-# ================= MAIN APP =================
-else:
+            if username == "shivam-user" and password == "12345":
+                st.session_state.login = True
+                st.rerun()
 
-    # ========= TITLE =========
-    st.markdown('<h1 class="main-title">🎓 AI Student System</h1>', unsafe_allow_html=True)
+            else:
+                st.error("Wrong Username or Password")
 
-    st.markdown('<p class="sub-title">🚀 Smart AI Dashboard + Face Recognition + Analytics</p>', unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    # ========= DATA =========
-    if os.path.exists("students.csv"):
-        df = pd.read_csv("students.csv")
+    st.stop()
 
-    else:
+# ================= DATA =================
 
-        data = {
-            "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
-            "Attendance":[90,95,60,85,55],
-            "Math":[88,98,45,82,40],
-            "Science":[90,99,50,84,35],
-            "English":[85,97,55,81,45]
-        }
+data = {
+    "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
+    "Attendance":[90,95,60,85,55],
+    "Math":[88,98,45,82,40],
+    "Science":[90,99,50,84,35],
+    "English":[85,97,55,81,45]
+}
 
-        df = pd.DataFrame(data)
-        df.to_csv("students.csv", index=False)
+df = pd.DataFrame(data)
+df["Average"] = df[["Math","Science","English"]].mean(axis=1)
 
-    # ========= AVERAGE =========
-    df["Average"] = df[["Math","Science","English"]].mean(axis=1)
+# ================= SIDEBAR =================
 
-    topper = df.loc[df["Average"].idxmax(),"Name"]
+st.sidebar.title("🎓 AI STUDENT SYSTEM")
 
-    weak_students = len(df[df["Average"] < 60])
+menu = st.sidebar.radio(
+    "MENU",
+    [
+        "Dashboard",
+        "Add Student",
+        "Face Attendance",
+        "Students",
+        "AI Chatbot",
+        "AI Prediction",
+        "Feedback"
+    ]
+)
 
-    poor_attendance = len(df[df["Attendance"] < 75])
+# ================= DASHBOARD =================
 
-    # ========= DASHBOARD =========
+if menu == "Dashboard":
+
+    st.markdown("<div class='main-title'>AI STUDENT SYSTEM</div>", unsafe_allow_html=True)
+
+    st.markdown("<div class='sub'>Smart AI Dashboard + Face Recognition + Analytics</div>", unsafe_allow_html=True)
+
     c1,c2,c3,c4 = st.columns(4)
 
     with c1:
         st.markdown(f"""
-        <div class="card">
-        <div class="card-title">👨‍🎓 Total Students</div>
-        <div class="card-value">{len(df)}</div>
+        <div class='card blue'>
+        <div class='small'>👨‍🎓 Total Students</div>
+        <div class='big'>{len(df)}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with c2:
+        topper = df.loc[df["Average"].idxmax()]["Name"]
         st.markdown(f"""
-        <div class="card">
-        <div class="card-title">🏆 Topper</div>
-        <div class="card-value">{topper}</div>
+        <div class='card green'>
+        <div class='small'>🏆 Topper</div>
+        <div class='big'>{topper}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with c3:
+        weak = len(df[df["Average"] < 60])
         st.markdown(f"""
-        <div class="card">
-        <div class="card-title">⚠ Weak Students</div>
-        <div class="card-value">{weak_students}</div>
+        <div class='card orange'>
+        <div class='small'>⚠ Weak Students</div>
+        <div class='big'>{weak}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with c4:
+        poor = len(df[df["Attendance"] < 75])
         st.markdown(f"""
-        <div class="card">
-        <div class="card-title">📉 Poor Attendance</div>
-        <div class="card-value">{poor_attendance}</div>
+        <div class='card purple'>
+        <div class='small'>📉 Poor Attendance</div>
+        <div class='big'>{poor}</div>
         </div>
         """, unsafe_allow_html=True)
 
-    # ========= ADD STUDENT =========
-    st.markdown('<p class="section">➕ Add New Student</p>', unsafe_allow_html=True)
+    st.markdown("## 📋 Student Performance Table")
+    st.dataframe(df, use_container_width=True)
+
+# ================= ADD STUDENT =================
+
+elif menu == "Add Student":
+
+    st.title("➕ Add New Student")
 
     name = st.text_input("Student Name")
 
     attendance = st.slider("Attendance",0,100,80)
-
     math = st.slider("Math",0,100,70)
-
     science = st.slider("Science",0,100,70)
-
     english = st.slider("English",0,100,70)
 
     if st.button("✅ Add Student"):
 
-        new_student = pd.DataFrame({
-            "Name":[name],
-            "Attendance":[attendance],
-            "Math":[math],
-            "Science":[science],
-            "English":[english]
-        })
+        avg = (math + science + english)/3
 
-        df = pd.concat([df,new_student], ignore_index=True)
+        new_row = {
+            "Name":name,
+            "Attendance":attendance,
+            "Math":math,
+            "Science":science,
+            "English":english,
+            "Average":avg
+        }
 
-        df.to_csv("students.csv", index=False)
+        df.loc[len(df)] = new_row
 
-        st.success(f"✅ {name} Added Successfully")
+        st.success("Student Added Successfully")
 
-    # ========= FACE RECOGNITION =========
-    st.markdown('<p class="section">📸 Face Recognition Attendance</p>', unsafe_allow_html=True)
+        st.dataframe(df, use_container_width=True)
 
-    camera = st.camera_input("Take Student Photo")
+# ================= FACE =================
 
-    if camera:
+elif menu == "Face Attendance":
 
-        st.markdown("""
-        <div class="success-box">
-        ✅ Face Detected Successfully <br><br>
-        🎯 Attendance Marked Successfully <br><br>
-        📌 Student Present
-        </div>
-        """, unsafe_allow_html=True)
+    st.title("📸 Face Recognition Attendance")
 
-    # ========= TABLE =========
-    st.markdown('<p class="section">📊 Student Performance Table</p>', unsafe_allow_html=True)
+    pic = st.camera_input("Take Student Photo")
+
+    if pic:
+        st.success("✅ Face Detected Successfully")
+        st.success("🎯 Attendance Marked Successfully")
+        st.success("🧑 Student Present")
+
+# ================= STUDENTS =================
+
+elif menu == "Students":
+
+    st.title("📚 Students Data")
 
     st.dataframe(df, use_container_width=True)
 
-    # ========= CHATBOT =========
-    st.markdown('<p class="section">🤖 AI Chatbot</p>', unsafe_allow_html=True)
+# ================= CHATBOT =================
 
-    question = st.text_input("Ask AI Question")
+elif menu == "AI Chatbot":
+
+    st.title("🤖 AI Chatbot")
+
+    question = st.text_input("Ask Question")
 
     if question:
 
@@ -274,70 +252,76 @@ else:
 
         for i,row in df.iterrows():
 
-            student = row["Name"].lower()
+            name = row["Name"].lower()
 
-            if student in q:
+            if name in q:
 
                 found = True
 
-                if "english" in q:
-
-                    st.success(f"{row['Name']} English Marks: {row['English']}")
-
-                elif "math" in q:
-
-                    st.success(f"{row['Name']} Math Marks: {row['Math']}")
+                if "math" in q:
+                    st.success(f"{row['Name']} Math Marks = {row['Math']}")
 
                 elif "science" in q:
+                    st.success(f"{row['Name']} Science Marks = {row['Science']}")
 
-                    st.success(f"{row['Name']} Science Marks: {row['Science']}")
+                elif "english" in q:
+                    st.success(f"{row['Name']} English Marks = {row['English']}")
 
                 elif "attendance" in q:
-
-                    st.success(f"{row['Name']} Attendance: {row['Attendance']}%")
+                    st.success(f"{row['Name']} Attendance = {row['Attendance']}%")
 
                 else:
+                    st.success(f"{row['Name']} Average = {row['Average']:.2f}")
 
-                    st.success(f"{row['Name']} Average Marks: {round(row['Average'],2)}")
+        if not found:
 
-        if found == False:
+            if "topper" in q:
+                st.success(f"🏆 Topper is {topper}")
 
-            st.error("❌ STUDENT NOT FOUND")
+            elif "weak" in q:
+                st.warning(f"⚠ Weak Students = {weak}")
 
-    # ========= AI PREDICTION =========
-    st.markdown('<p class="section">🧠 AI Study Prediction</p>', unsafe_allow_html=True)
+            else:
+                st.error("Student Not Found")
 
-    hours = st.slider("📚 Study Hours",1,12,2)
+# ================= PREDICTION =================
 
-    predicted_marks = hours * 15
+elif menu == "AI Prediction":
 
-    st.markdown(f"""
-    <div class="success-box">
-    📚 Study Hours: {hours} <br><br>
-    🎯 Predicted Marks: {predicted_marks}
-    </div>
-    """, unsafe_allow_html=True)
+    st.title("📈 AI Study Prediction")
 
-    # ========= FEEDBACK =========
-    st.markdown('<p class="section">💬 Feedback System</p>', unsafe_allow_html=True)
+    hours = st.slider("Study Hours",1,12,5)
+
+    predicted = hours * 10
+
+    st.success(f"🎯 Predicted Marks = {predicted}/120")
+
+    if predicted > 80:
+        st.success("Excellent Performance Expected")
+
+    elif predicted > 50:
+        st.warning("Average Performance")
+
+    else:
+        st.error("Need More Study")
+
+# ================= FEEDBACK =================
+
+elif menu == "Feedback":
+
+    st.title("💬 Feedback System")
 
     feedback = st.text_area("Enter Feedback")
 
-    if st.button("📩 Submit Feedback"):
+    if st.button("Submit Feedback"):
 
-        if feedback != "":
+        st.success("✅ Feedback Submitted Successfully")
 
-            st.markdown("""
-            <div class="success-box">
-            ✅ Feedback Submitted Successfully <br><br>
-            🤖 AI Sentiment: Positive
-            </div>
-            """, unsafe_allow_html=True)
+        if "good" in feedback.lower():
+            st.success("😊 Positive Feedback")
 
-    # ========= FOOTER =========
-    st.markdown("""
-    <hr>
-    <h3 style='text-align:center;color:white;'>
-    🚀 AI Student Management System | Made By Shivam Kumar
-    </h3>
-    """, unsafe_allow_html=True)
+        elif "bad" in feedback.lower():
+            st.error("😔 Negative Feedback")
+
+        else:
+            st.info("👍 Thanks For Feedback")
