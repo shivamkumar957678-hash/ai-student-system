@@ -1,110 +1,129 @@
-# =========================
-# FULL FINAL AI STUDENT SYSTEM
-# =========================
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
-
-st.set_page_config(page_title="AI Student System", layout="wide")
 
 # =========================
-# DARK CSS
+# PAGE CONFIG
 # =========================
+st.set_page_config(
+    page_title="AI Student System",
+    layout="wide"
+)
 
+# =========================
+# CUSTOM CSS
+# =========================
 st.markdown("""
 <style>
 
 .stApp{
-background:linear-gradient(135deg,#020024,#090979,#3d0075);
-color:white;
+    background: linear-gradient(135deg,#020024,#090979,#3d0075);
+    color:white;
 }
 
 .block-container{
-padding-top:1rem;
+    padding-top:1rem;
+    padding-bottom:1rem;
 }
 
+/* TITLE */
 .main-title{
-text-align:center;
-font-size:60px;
-font-weight:900;
-color:#00F5FF;
-text-shadow:0px 0px 20px #00F5FF;
+    text-align:center;
+    font-size:60px;
+    font-weight:900;
+    color:#00F5FF;
+    text-shadow:0px 0px 25px #00F5FF;
 }
 
 .sub-title{
-text-align:center;
-font-size:22px;
-color:#00ffff;
-margin-bottom:25px;
+    text-align:center;
+    font-size:24px;
+    color:#00ffff;
+    margin-bottom:25px;
 }
 
+/* DARK BOX */
 .dark-box{
-background:#030712;
-padding:20px;
-border-radius:20px;
-border:2px solid #b026ff;
-box-shadow:0px 0px 20px #b026ff;
-margin-bottom:20px;
+    background:#050816;
+    padding:20px;
+    border-radius:20px;
+    border:2px solid #b026ff;
+    box-shadow:0px 0px 20px #b026ff;
+    margin-bottom:20px;
 }
 
+/* INPUT */
 .stTextInput input{
-background:#050816 !important;
-color:white !important;
-border:2px solid #b026ff !important;
-border-radius:12px !important;
+    background:#0b1120 !important;
+    color:white !important;
+    border:2px solid #b026ff !important;
+    border-radius:12px !important;
+    padding:12px !important;
 }
 
+/* TEXT AREA */
 .stTextArea textarea{
-background:#050816 !important;
-color:white !important;
-border:2px solid #b026ff !important;
-border-radius:12px !important;
+    background:#0b1120 !important;
+    color:white !important;
+    border:2px solid #b026ff !important;
+    border-radius:12px !important;
 }
 
+/* LABEL */
 label{
-color:white !important;
-font-weight:bold !important;
-font-size:18px !important;
+    color:white !important;
+    font-size:18px !important;
+    font-weight:bold !important;
 }
 
+/* BUTTON */
 .stButton button{
-width:100%;
-background:linear-gradient(90deg,#007bff,#d400ff);
-color:white;
-border:none;
-padding:12px;
-font-size:18px;
-font-weight:bold;
-border-radius:12px;
-box-shadow:0px 0px 20px #d400ff;
+    width:100%;
+    background:linear-gradient(90deg,#007bff,#d400ff);
+    color:white;
+    border:none;
+    border-radius:12px;
+    padding:12px;
+    font-size:18px;
+    font-weight:bold;
+    box-shadow:0px 0px 20px #d400ff;
 }
 
+/* METRIC */
 [data-testid="metric-container"]{
-background:#050816;
-border:2px solid #b026ff;
-padding:15px;
-border-radius:15px;
-box-shadow:0px 0px 20px #b026ff;
+    background:#050816;
+    border:2px solid #b026ff;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0px 0px 20px #b026ff;
 }
 
+[data-testid="metric-container"] label{
+    color:#00ffff !important;
+    font-size:18px !important;
+}
+
+[data-testid="metric-container"] div{
+    color:white !important;
+}
+
+/* TABLE */
 [data-testid="stDataFrame"]{
-background:#050816;
-border-radius:20px;
-border:2px solid #b026ff;
-box-shadow:0px 0px 25px #b026ff;
-padding:10px;
+    background:#050816;
+    border:2px solid #b026ff;
+    border-radius:20px;
+    padding:10px;
+    box-shadow:0px 0px 20px #b026ff;
 }
 
 thead tr th{
-background:#111827 !important;
-color:#00ffff !important;
+    background:#111827 !important;
+    color:#00ffff !important;
 }
 
 tbody tr td{
-background:#050816 !important;
-color:white !important;
+    background:#050816 !important;
+    color:white !important;
 }
 
 </style>
@@ -113,95 +132,76 @@ color:white !important;
 # =========================
 # TITLE
 # =========================
+st.markdown(
+    '<div class="main-title">🔐 AI STUDENT SYSTEM</div>',
+    unsafe_allow_html=True
+)
 
-st.markdown('<div class="main-title">🔐 AI STUDENT SYSTEM</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-title">Smart • Secure • Intelligent</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="sub-title">Smart • Secure • Intelligent</div>',
+    unsafe_allow_html=True
+)
 
 # =========================
-# LOGIN
+# DATA
 # =========================
+df = pd.DataFrame({
+    "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
+    "Attendance":[90,95,60,85,55],
+    "Math":[88,98,45,82,40],
+    "Science":[90,99,50,84,35],
+    "English":[85,97,55,81,45]
+})
 
-c1,c2 = st.columns(2)
+df["Average"] = round(
+    (df["Math"] + df["Science"] + df["English"]) / 3,2
+)
 
-with c1:
+# =========================
+# MAIN LAYOUT
+# =========================
+left,right = st.columns([1,2])
 
+# =========================
+# LEFT SIDE
+# =========================
+with left:
+
+    # FACE AUTH
     st.markdown('<div class="dark-box">', unsafe_allow_html=True)
 
-    st.subheader("📷 Face Authentication")
+    st.subheader("📸 Face Authentication")
 
     st.write("Login with your registered face")
 
-    img = st.camera_input("Capture Face")
+    camera = st.camera_input("Capture Face")
 
-    if st.button("📸 Capture & Login"):
-        st.success("✅ Face detected successfully")
+    if st.button("📷 Capture & Login"):
+        st.success("✅ Face detected successfully!")
         st.success("🎉 Access Granted")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-with c2:
-
+    # LOGIN
     st.markdown('<div class="dark-box">', unsafe_allow_html=True)
 
     st.subheader("🔑 Manual Login")
 
     username = st.text_input("Username")
+
     password = st.text_input("Password", type="password")
 
     if st.button("Login"):
 
         if username == "admin" and password == "admin123":
             st.success("✅ Login Successful")
+
         else:
             st.error("❌ Wrong Username or Password")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-# =========================
-# DASHBOARD
-# =========================
-
-st.markdown("## 📊 AI STUDENT SYSTEM DASHBOARD")
-
-m1,m2,m3,m4 = st.columns(4)
-
-with m1:
-    st.metric("👨‍🎓 Total Students","5")
-
-with m2:
-    st.metric("🏆 Topper","Priya")
-
-with m3:
-    st.metric("⚠ Weak Students","2")
-
-with m4:
-    st.metric("📉 Poor Attendance","2")
-
-# =========================
-# DATA
-# =========================
-
-df = pd.DataFrame({
-    "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
-    "Attendance":[90,95,60,85,55],
-    "Math":[88,98,45,82,40],
-    "Science":[90,99,50,84,35],
-    "English":[85,97,55,81,45],
-    "Average":[87.67,98,50,82.33,40]
-})
-
-# =========================
-# MAIN SECTION
-# =========================
-
-left,right = st.columns([1,2])
-
-# =========================
-# ADD STUDENT
-# =========================
-
-with left:
-
+    # ADD STUDENT
     st.markdown('<div class="dark-box">', unsafe_allow_html=True)
 
     st.subheader("➕ Add New Student")
@@ -221,10 +221,7 @@ with left:
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # =========================
     # FACE ATTENDANCE
-    # =========================
-
     st.markdown('<div class="dark-box">', unsafe_allow_html=True)
 
     st.subheader("📸 Face Recognition Attendance")
@@ -238,19 +235,36 @@ with left:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================
-# TABLE + CHARTS
+# RIGHT SIDE
 # =========================
-
 with right:
 
-    st.markdown("### 📋 Student Performance Table")
+    st.markdown("## 📊 AI STUDENT SYSTEM DASHBOARD")
+
+    # METRICS
+    m1,m2,m3,m4 = st.columns(4)
+
+    with m1:
+        st.metric("👨‍🎓 Total Students","5")
+
+    with m2:
+        st.metric("🏆 Topper","Priya")
+
+    with m3:
+        st.metric("⚠ Weak Students","2")
+
+    with m4:
+        st.metric("📉 Poor Attendance","2")
+
+    # TABLE
+    st.markdown("## 📋 Student Performance Table")
 
     st.dataframe(df,use_container_width=True)
 
-    ch1,ch2 = st.columns(2)
+    # CHARTS
+    c1,c2 = st.columns(2)
 
     # BAR CHART
-
     fig_bar = px.bar(
         df,
         x="Name",
@@ -263,11 +277,11 @@ with right:
     fig_bar.update_layout(
         paper_bgcolor="#050816",
         plot_bgcolor="#050816",
-        font_color="white"
+        font_color="white",
+        title_font_color="#00F5FF"
     )
 
     # PIE CHART
-
     fig_pie = px.pie(
         df,
         names="Name",
@@ -280,84 +294,72 @@ with right:
     fig_pie.update_layout(
         paper_bgcolor="#050816",
         plot_bgcolor="#050816",
-        font_color="white"
+        font_color="white",
+        title_font_color="#ff00ff"
     )
 
-    with ch1:
+    with c1:
         st.plotly_chart(fig_bar,use_container_width=True)
 
-    with ch2:
+    with c2:
         st.plotly_chart(fig_pie,use_container_width=True)
 
-# =========================
-# BOTTOM SECTION
-# =========================
+    # BOTTOM
+    b1,b2,b3 = st.columns(3)
 
-b1,b2,b3 = st.columns(3)
+    # AI CHATBOT
+    with b1:
 
-# =========================
-# AI CHATBOT
-# =========================
+        st.markdown('<div class="dark-box">', unsafe_allow_html=True)
 
-with b1:
+        st.subheader("🤖 AI Chatbot")
 
-    st.markdown('<div class="dark-box">', unsafe_allow_html=True)
+        question = st.text_input("Ask any question")
 
-    st.subheader("🤖 AI Chatbot")
+        if st.button("Ask AI"):
 
-    question = st.text_input("Ask anything about students")
+            if question:
+                st.success("AI Response: Student performance is improving 🚀")
 
-    if st.button("Ask AI"):
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        if question:
-            st.success(f"AI Response: {question} performance is good.")
+    # AI PREDICTION
+    with b2:
 
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="dark-box">', unsafe_allow_html=True)
 
-# =========================
-# AI PREDICTION
-# =========================
+        st.subheader("🧠 AI Study Prediction")
 
-with b2:
+        study_hours = st.slider("Study Hours",1,10,6)
 
-    st.markdown('<div class="dark-box">', unsafe_allow_html=True)
+        predicted_marks = study_hours * 10
 
-    st.subheader("🧠 AI Study Prediction")
+        st.metric("Predicted Marks",f"{predicted_marks}/100")
 
-    study_hours = st.slider("Study Hours",1,10,6)
+        if predicted_marks >= 60:
+            st.success("🎉 Good! Keep it up and you can score well.")
+        else:
+            st.warning("⚠ Need More Practice")
 
-    predicted_marks = study_hours * 10
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    st.metric("Predicted Marks",f"{predicted_marks}/100")
+    # FEEDBACK
+    with b3:
 
-    if predicted_marks >= 60:
-        st.success("🎉 Good! You can score well")
-    else:
-        st.warning("⚠ Need More Practice")
+        st.markdown('<div class="dark-box">', unsafe_allow_html=True)
 
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.subheader("💬 Feedback System")
 
-# =========================
-# FEEDBACK
-# =========================
+        feedback = st.text_area("Enter your feedback")
 
-with b3:
+        if st.button("Submit Feedback"):
+            st.success("✅ Feedback Submitted")
 
-    st.markdown('<div class="dark-box">', unsafe_allow_html=True)
-
-    st.subheader("💬 Feedback System")
-
-    feedback = st.text_area("Enter your feedback")
-
-    if st.button("Submit Feedback"):
-        st.success("✅ Feedback Submitted")
-
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================
 # FOOTER
 # =========================
-
 st.markdown("""
 <hr>
 <center>
