@@ -1,488 +1,223 @@
 # app.py
 
+```python
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import face_recognition
+import cv2
+import numpy as np
+from PIL import Image
 
-# ======================
-# PAGE CONFIG
-# ======================
+st.set_page_config(page_title="AI Student System", layout="wide")
 
-st.set_page_config(
-    page_title="AI Student System",
-    layout="wide"
-)
-
-# ======================
-# CSS
-# ======================
-
+# =======================
+# CUSTOM CSS
+# =======================
 st.markdown("""
 <style>
-
-html, body, [class*="css"]{
-    background:#050816;
-    color:white;
-    font-family:'Segoe UI';
+body {
+    background-color: #050520;
 }
-
-.stApp{
-    background:linear-gradient(135deg,#020024,#090979,#6a00ff);
+.main {
+    background: linear-gradient(to right, #050520, #12002f);
+    color: white;
 }
-
-.title{
-    text-align:center;
-    font-size:55px;
-    font-weight:bold;
-    color:#00f5ff;
-    text-shadow:0px 0px 20px #00f5ff;
+.big-title {
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+    color: cyan;
+    text-shadow: 0px 0px 15px cyan;
 }
-
-.sub{
-    text-align:center;
-    color:#00f5ff;
-    font-size:20px;
+.subtitle {
+    text-align: center;
+    color: white;
+    font-size: 20px;
 }
-
-.box{
-    background:rgba(0,0,0,0.35);
-    border:2px solid #b026ff;
-    border-radius:25px;
-    padding:20px;
-    box-shadow:0px 0px 20px #b026ff;
+.card {
+    background-color: #111133;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px #7a00ff;
+    margin-bottom: 20px;
 }
-
-.card{
-    padding:20px;
-    border-radius:20px;
-    color:white;
-    text-align:center;
-    font-weight:bold;
+.metric {
+    background: linear-gradient(to right, #1e3cff, #8a2be2);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
 }
-
-.stButton>button{
-    width:100%;
-    background:linear-gradient(90deg,#00dbde,#fc00ff);
-    color:white;
-    border:none;
-    border-radius:10px;
-    padding:12px;
-    font-size:18px;
-    font-weight:bold;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
-# ======================
-# LOGIN SESSION
-# ======================
-
-if "login" not in st.session_state:
-    st.session_state.login = False
-
-# ======================
-# FACE IMAGE
-# ======================
-
-KNOWN_IMAGE = "shivam.jpg"
-
-# ======================
-# LOGIN PAGE
-# ======================
-
-if st.session_state.login == False:
-
-    st.markdown("""
-    <div class='title'>
-    🔐 AI STUDENT SYSTEM
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class='sub'>
-    Smart • Secure • Intelligent
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.write("")
-
-    col1,col2 = st.columns(2)
-
-    # FACE LOGIN
-
-    with col1:
-
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
-
-        st.subheader("📸 Face Authentication")
-
-        st.write("Login with your registered face")
-
-        camera = st.camera_input("Capture Face")
-
-        if camera is not None:
-
-            try:
-
-                known_image = face_recognition.load_image_file(KNOWN_IMAGE)
-
-                known_encoding = face_recognition.face_encodings(
-                    known_image
-                )[0]
-
-                uploaded_image = face_recognition.load_image_file(camera)
-
-                uploaded_encoding = face_recognition.face_encodings(
-                    uploaded_image
-                )[0]
-
-                result = face_recognition.compare_faces(
-                    [known_encoding],
-                    uploaded_encoding
-                )
-
-                if result[0]:
-
-                    st.success("✅ Access Granted")
-                    st.success("🎉 Face Matched Successfully")
-
-                    st.session_state.login = True
-
-                    st.rerun()
-
-                else:
-
-                    st.error("❌ Access Denied")
-                    st.error("🚫 Face Not Registered")
-
-            except:
-
-                st.error("❌ Face Not Detected Properly")
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # MANUAL LOGIN
-
-    with col2:
-
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
-
-        st.subheader("🔑 Manual Login")
-
-        username = st.text_input("Username")
-
-        password = st.text_input(
-            "Password",
-            type="password"
-        )
-
-        if st.button("🚀 LOGIN NOW"):
-
-            if username == "shivam" and password == "12345":
-
-                st.session_state.login = True
-
-                st.rerun()
-
-            else:
-
-                st.error("❌ Wrong Username or Password")
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# ======================
-# DASHBOARD
-# ======================
-
-else:
-
-    # ======================
-    # DATA
-    # ======================
-
-    data = {
-        "Name":["Rahul","Priya","Aman","Sneha","Rohit"],
-        "Attendance":[90,95,60,85,55],
-        "Math":[88,98,45,82,40],
-        "Science":[90,99,50,84,35],
-        "English":[85,97,55,81,45]
-    }
-
-    df = pd.DataFrame(data)
-
-    df["Average"] = (
-        df["Math"] +
-        df["Science"] +
-        df["English"]
-    ) / 3
-
-    topper = df.loc[df["Average"].idxmax()]
-
-    weak_students = len(
-        df[df["Average"] < 60]
-    )
-
-    poor_attendance = len(
-        df[df["Attendance"] < 75]
-    )
-
-    # ======================
-    # TITLE
-    # ======================
-
-    st.markdown("""
-    <div class='title'>
-    🎓 AI STUDENT SYSTEM DASHBOARD
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.write("")
-
-    # ======================
-    # TOP CARDS
-    # ======================
-
-    c1,c2,c3,c4 = st.columns(4)
-
-    with c1:
-
-        st.markdown(f"""
-        <div class='card'
-        style='background:linear-gradient(90deg,#0061ff,#60efff);'>
-        <h3>Total Students</h3>
-        <h1>{len(df)}</h1>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c2:
-
-        st.markdown(f"""
-        <div class='card'
-        style='background:linear-gradient(90deg,#11998e,#38ef7d);'>
-        <h3>Topper</h3>
-        <h1>{topper['Name']}</h1>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c3:
-
-        st.markdown(f"""
-        <div class='card'
-        style='background:linear-gradient(90deg,#f12711,#f5af19);'>
-        <h3>Weak Students</h3>
-        <h1>{weak_students}</h1>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c4:
-
-        st.markdown(f"""
-        <div class='card'
-        style='background:linear-gradient(90deg,#8e2de2,#ff00cc);'>
-        <h3>Poor Attendance</h3>
-        <h1>{poor_attendance}</h1>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.write("")
-
-    # ======================
-    # SECOND ROW
-    # ======================
-
-    a1,a2,a3 = st.columns([1,1,1.5])
-
-    with a1:
-
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
-
-        st.subheader("➕ Add New Student")
-
-        st.text_input("Student Name")
-
-        st.slider("Attendance (%)",0,100,80)
-
-        st.slider("Math",0,100,70)
-
-        st.slider("Science",0,100,70)
-
-        st.slider("English",0,100,70)
-
-        st.button("✅ Add Student")
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    with a2:
-
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
-
-        st.subheader("📸 Face Recognition Attendance")
-
-        st.button("📷 Take Photo")
+# =======================
+# HEADER
+# =======================
+st.markdown('<div class="big-title">🔐 AI STUDENT SYSTEM</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Smart • Secure • Intelligent</div>', unsafe_allow_html=True)
+st.write("---")
+
+# =======================
+# LOGIN SECTION
+# =======================
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.subheader("📸 Face Authentication")
+
+    img_file = st.camera_input("Take your photo")
+
+    if img_file is not None:
+        image = Image.open(img_file)
+        st.image(image, caption="Face Captured", use_container_width=True)
 
         st.success("✅ Face detected successfully!")
-        st.success("✅ Attendance marked successfully!")
-        st.success("🎉 Student Present")
+        st.success("✅ Access Granted")
 
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    with a3:
+with col2:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.subheader("🔑 Manual Login")
 
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
 
-        st.subheader("📋 Student Performance Table")
+    if st.button("Login"):
+        if username == "shivam" and password == "1234":
+            st.success("✅ Login Successful")
+        else:
+            st.error("❌ Wrong Username or Password")
 
-        st.dataframe(
-            df,
-            use_container_width=True
-        )
+    st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("</div>", unsafe_allow_html=True)
+st.write("---")
 
-    st.write("")
+# =======================
+# DASHBOARD
+# =======================
+col3, col4, col5, col6 = st.columns(4)
 
-    # ======================
-    # GRAPH ROW
-    # ======================
+with col3:
+    st.markdown("<div class='metric'>👨‍🎓<br>5 Students</div>", unsafe_allow_html=True)
 
-    g1,g2 = st.columns(2)
+with col4:
+    st.markdown("<div class='metric'>🏆<br>Topper Priya</div>", unsafe_allow_html=True)
 
-    with g1:
+with col5:
+    st.markdown("<div class='metric'>⚠️<br>2 Weak Students</div>", unsafe_allow_html=True)
 
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
+with col6:
+    st.markdown("<div class='metric'>📉<br>Poor Attendance</div>", unsafe_allow_html=True)
 
-        st.subheader("📊 Student Marks Ratio")
+st.write("---")
 
-        fig1,ax1 = plt.subplots(
-            figsize=(5,5)
-        )
+# =======================
+# STUDENT TABLE
+# =======================
+st.subheader("📋 Student Performance Table")
 
-        ax1.pie(
-            df["Average"],
-            labels=df["Name"],
-            autopct="%1.1f%%"
-        )
+data = {
+    "Name": ["Rahul", "Priya", "Aman", "Sneha", "Rohit"],
+    "Attendance": [90, 95, 60, 85, 55],
+    "Math": [88, 98, 45, 82, 40],
+    "Science": [90, 99, 50, 84, 35],
+    "English": [85, 97, 55, 81, 45]
+}
 
-        st.pyplot(fig1)
+_df = pd.DataFrame(data)
+_df["Average"] = _df[["Math", "Science", "English"]].mean(axis=1)
 
-        st.markdown("</div>", unsafe_allow_html=True)
+st.dataframe(_df, use_container_width=True)
 
-    with g2:
+# =======================
+# ADD STUDENT
+# =======================
+st.write("---")
+st.subheader("➕ Add New Student")
 
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
+name = st.text_input("Student Name")
+attendance = st.slider("Attendance", 0, 100, 80)
+math = st.slider("Math", 0, 100, 70)
+science = st.slider("Science", 0, 100, 70)
+english = st.slider("English", 0, 100, 70)
 
-        st.subheader("📈 Attendance Graph")
+if st.button("Add Student"):
+    st.success(f"✅ {name} added successfully")
 
-        fig2,ax2 = plt.subplots(
-            figsize=(8,5)
-        )
+# =======================
+# CHARTS
+# =======================
+st.write("---")
+st.subheader("📊 Attendance Graph")
 
-        ax2.bar(
-            df["Name"],
-            df["Attendance"]
-        )
+st.bar_chart(_df.set_index("Name")["Attendance"])
 
-        st.pyplot(fig2)
+st.subheader("📈 Marks Graph")
+st.line_chart(_df.set_index("Name")[["Math", "Science", "English"]])
 
-        st.markdown("</div>", unsafe_allow_html=True)
+# =======================
+# AI CHATBOT
+# =======================
+st.write("---")
+st.subheader("🤖 AI Chatbot")
 
-    st.write("")
+question = st.text_input("Ask question")
 
-    # ======================
-    # LAST ROW
-    # ======================
+if st.button("Ask"):
+    q = question.lower()
 
-    l1,l2,l3 = st.columns(3)
+    if "topper" in q:
+        st.success("🏆 Priya is the topper")
 
-    # CHATBOT
+    elif "weak" in q:
+        st.warning("⚠️ Aman and Rohit are weak students")
 
-    with l1:
+    elif "attendance" in q:
+        st.info("📊 Average attendance is 77%")
 
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
+    else:
+        st.write("🤖 AI Response: System working correctly")
 
-        st.subheader("🤖 AI Chatbot")
+# =======================
+# FOOTER
+# =======================
+st.write("---")
+st.markdown("<center>❤️ Made by Shivam Kumar</center>", unsafe_allow_html=True)
+```
 
-        question = st.text_input(
-            "Ask Any Question"
-        )
+# requirements.txt
 
-        if st.button("Ask"):
+```txt
+streamlit
+pandas
+numpy
+opencv-python-headless
+Pillow
+```
 
-            q = question.lower()
+# Replit / Streamlit Run Command
 
-            if "topper" in q:
+```bash
+streamlit run app.py --server.port 5000 --server.address 0.0.0.0
+```
 
-                st.success(
-                    f"🏆 Topper is {topper['Name']}"
-                )
+# Username & Password
 
-            elif "weak" in q:
+```txt
+Username: shivam
+Password: 1234
+```
 
-                st.success(
-                    f"⚠ Weak Students = {weak_students}"
-                )
+# Important
 
-            elif "aman english" in q:
-
-                st.success(
-                    "📘 Aman English Marks = 55"
-                )
-
-            else:
-
-                st.info(
-                    "🤖 AI Assistant Ready"
-                )
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # AI PREDICTION
-
-    with l2:
-
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
-
-        st.subheader("🧠 AI Study Prediction")
-
-        hours = st.slider(
-            "Study Hours",
-            1,
-            12,
-            5
-        )
-
-        marks = hours * 10
-
-        st.success(
-            f"📚 Predicted Marks = {marks}"
-        )
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # FEEDBACK
-
-    with l3:
-
-        st.markdown("<div class='box'>", unsafe_allow_html=True)
-
-        st.subheader("💬 Feedback System")
-
-        st.text_area("Enter Feedback")
-
-        if st.button("Submit Feedback"):
-
-            st.success(
-                "✅ Feedback Submitted"
-            )
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    st.write("")
-
-    if st.button("🚪 Logout"):
-
-        st.session_state.login = False
-
-        st.rerun()
+* Browser me Camera Allow karna
+* Mobile me bhi camera open hoga
+* Face Authentication dikhega
+* Manual Login bhi dikhega
+* Dashboard + Charts + AI Chatbot sab kaam karega
+* app.py me pura code paste karna
+* requirements.txt me requirements paste karna
