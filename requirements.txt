@@ -1,7 +1,5 @@
 streamlit
 pandas
-matplotlib
-opencv-python-headless
-face-recognition
 numpy
+opencv-python-headless
 Pillow
